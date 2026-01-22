@@ -4,7 +4,7 @@ import json
 from bs4 import BeautifulSoup
 
 # import AI module
-from src.ai_service import analyze_tech_article
+from ai_service import analyze_tech_article
 
 # Collecting results in an array
 all_articles_data = []
@@ -116,23 +116,25 @@ for a in articles:
                     print(f"Length: {len(content.split())}")
                     
                     # 8. using Google AI API to analyze
-                    print("----- AI analysis ... -----")
+                    print("----- Google AI analyzing ... -----")
                     ai_result = analyze_tech_article(content)
                     article_data = {
                         "title": title,
                         "url": full_url,
                         "published_date": date_info,
                         "crawled_at": time.strftime("%Y-%m-%d %H:%M:%S"), # fetch time
-                        "content": content, # original content
                         "ai_analysis": ai_result # JSON (Dict) returned from AI
                     }
 
                     print(f"Title: {title}")
                     # print("Content: " + content[:50] + "...") # preview
 
-                    all_articles_data.append(article_data)
-                    article_count += 1
-                    print("Analyzed Report Added")
+                    if ai_result:
+                        all_articles_data.append(article_data)
+                        article_count += 1
+                        print("AI Analyzed Report Added")
+                    else:
+                        print("AI Analysis Failed")
 
                 # 9. stop to avoid DDoS detection
                 time.sleep(1)
