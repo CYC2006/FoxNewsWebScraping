@@ -1,0 +1,19 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+
+# ===== Virtual Environment =====
+venv/
+.env/
+
+# ===== macOS =====
+.DS_Store
+
+# ===== Logs =====
+*.log
+
+# ===== Data =====
+data.json
+
+# ===== VS Code =====
+.vscode/
