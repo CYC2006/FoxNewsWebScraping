@@ -4,7 +4,7 @@ import os
 
 # os.environ["GEMINI_API_KEY"] = "你的_API_KEY"
 api_key = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key="AIzaSyBEjUsIWnAt4MhXbP89yxOWLWL3x6OVlVg") 
+genai.configure(api_key="AIzaSyBi8BDEtq-y9y71iceTQpeOw1J8Qpp8ncU") 
 
 def analyze_tech_article(content):
     #  input: aritcle cotent (str)
