@@ -1,10 +1,18 @@
 import google.generativeai as genai
 import json
 import os
+from dotenv import load_dotenv
+
+# load environment variables in .env
+load_dotenv()
 
 # os.environ["GEMINI_API_KEY"] = "你的_API_KEY"
 api_key = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key="AIzaSyBi8BDEtq-y9y71iceTQpeOw1J8Qpp8ncU") 
+
+if not api_key:
+    raise ValueError("❌ Error: GOOGLE_API_KEY not found!")
+
+genai.configure(api_key=api_key) 
 
 def analyze_tech_article(content):
     #  input: aritcle cotent (str)
