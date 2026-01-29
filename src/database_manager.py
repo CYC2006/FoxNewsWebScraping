@@ -32,6 +32,22 @@ def init_db():
     conn.close()
     print(f"[Database] Initialized {DB_NAME} successfully.")
 
+
+def is_article_exists(url):
+    # Check if an article URL already exists in the database
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+
+    # Query for the existence of the URL
+    c.execute("SELECT 1 FROM articles WHERE url = ?", (url,))
+    result = c.fetchone()
+    
+    conn.close()
+
+    # Returns True if exists, False otherwise
+    return result is not None
+
+
 def save_article_to_db(article_data):
     # Save a single article to the database.
     # Ignores the insert if the URL already exists (Deduplication).

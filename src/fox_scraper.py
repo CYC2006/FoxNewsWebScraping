@@ -7,7 +7,7 @@ from datetime import datetime
 # Import AI module
 from ai_service import analyze_tech_article
 # Import Database module
-from database_manager import init_db, save_article_to_db
+from database_manager import init_db, is_article_exists, save_article_to_db
 
 # Helper function to convert Fox News date to YYYY-MM-DD
 def parse_fox_date(date_parts):
@@ -106,6 +106,11 @@ for a in articles:
             # 3. Complete full Fox News url
             full_url = relative_url if relative_url.startswith("http") else f"https://www.foxnews.com{relative_url}"
             
+            if is_article_exists(full_url):
+                print(f"⏩ Skipping: '{title[:30]}...' (Already analyzed)")
+                print("-" * 82)
+                continue
+
             try:
                 # 4. Request article detail page
                 detail_res = requests.get(full_url, headers=headers, timeout=10)
