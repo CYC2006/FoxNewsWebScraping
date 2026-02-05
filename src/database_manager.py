@@ -107,14 +107,60 @@ def save_article_to_db(article_data):
         conn.close()
 
 
-def clear_categories():
+# ===== Database Operations from User =====
+
+# Returns a dictionary containing database statistics
+def get_db_stats():
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM articles")
+    article_count = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM keyword_metadata")
+    keyword_count = c.fetchone()[0]
+    conn.close()
+    return {"articles": article_count, "keywords": keyword_count}
+
+
+# Clear the keyword_metadata table (for re-run AI categorization with new prompt)
+def clear_keyword_categories():
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("DELETE FROM keyword_metadata")
+    deleted_count = c.rowcount
+    conn.commit()
+    conn.close()
+    print(f"🧹 Database Cleaned: Removed {deleted_count} keyword categories.")
+
+
+# Exports all articles from SQLite to a JSON file
+def export_to_json(filename = "fox_news_export.json"):
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row # This allows accessing columns by name
+    c = conn.cursor()
+    
+    c.execute("SELECT * FROM articles")
+    rows = c.fetchall()
+    
+    # Convert SQLite rows to a list of dicts
+    data = [dict(row) for row in rows]
+    
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"📦 Export successful! Saved to {filename}")
+    except Exception as e:
+        print(f"❌ Export failed: {e}")
+    finally:
+        conn.close()
+
+
+# Simple search function to find articles containing a specific keyword
+def search_articles_by_title(keyword):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
-    # 清除所有已儲存的關鍵字分類，強迫下次重新分析
-    print("🧹 Cleaning keyword_metadata table...")
-    c.execute("DELETE FROM keyword_metadata")
-    
-    conn.commit()
+    # SQL LIKE query for partial matching
+    c.execute("SELECT title, published_date, url FROM articles WHERE title LIKE ?", (f'%{keyword}%',))
+    results = c.fetchall()
     conn.close()
-    print("✅ Database cleaned! You can now run the analyzer again.")
+    return results

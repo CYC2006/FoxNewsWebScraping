@@ -47,6 +47,7 @@ def run_scraper():
     articles = soup.find_all("article")
 
     print("-" * 82)
+    article_index = 1
     article_count = 0
 
 
@@ -82,7 +83,12 @@ def run_scraper():
                 category += (time_text_arr[0].capitalize() + " ")
                 del time_text_arr[0]
 
-            print(f"Article {article_count+1}", end=" | ")
+
+            if article_index < 10:
+                print(f"0{article_index}", end=" | ")
+            else:
+                print(f"{article_index}", end=" | ")
+                
 
             # Handle case where time_text_arr might be empty after processing
             if len(time_text_arr) >= 3:
@@ -99,6 +105,7 @@ def run_scraper():
         if title_header:
             link_tag = title_header.find("a")
             if link_tag:
+                article_index += 1
                 title = link_tag.get_text(strip=True)
 
                 # 2. Get article relative url
@@ -107,7 +114,7 @@ def run_scraper():
                 full_url = relative_url if relative_url.startswith("http") else f"https://www.foxnews.com{relative_url}"
                 
                 if is_article_exists(full_url):
-                    print(f"⏩ Skipping: '{title[:30]}...' (Already analyzed)")
+                    print(f"\n⏩ Skipping: '{title[:30]}...' (Already analyzed)")
                     print("-" * 82)
                     continue
 
@@ -156,6 +163,7 @@ def run_scraper():
                             saved = save_article_to_db(article_data)
                             if saved:
                                 article_count += 1
+
                         else:
                             print("❌ AI Analysis Failed (returned None)")
 
@@ -166,7 +174,7 @@ def run_scraper():
 
         print("-" * 82)
 
-    print("All tasks finished. Check 'fox_news.db' for results.")
+    print(f"Successfully added {article_count}Check 'fox_news.db' for results.")
 
 
 # Ensure fox_scraper
