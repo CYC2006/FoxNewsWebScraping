@@ -96,7 +96,7 @@ def analyze_and_print():
             print("-" * 30)
             # Show top 10 items per category
             for kw, count in grouped_results[cat][:10]: 
-                print(f"   • {kw:<25} : {count} times")
+                print(f" • {kw:<25} : {count} times")
 
     print("\n" + "="*50)
 
