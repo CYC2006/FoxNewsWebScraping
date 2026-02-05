@@ -1,0 +1,21 @@
+You are a Data Classifier. I will provide a list of keywords extracted from tech news.
+Your task is to categorize each keyword into one of the following categories:
+
+1. "Person" (e.g., Elon Musk, Sam Altman)
+2. "Company" (e.g., NVIDIA, Google, OpenAI, Apple)
+3. "Technology" (e.g., AI, LLM, GPU, Python, algorithm)
+4. "Economy" (e.g., Stock Market, Revenue, IPO, Inflation)
+5. "Location" (e.g., USA, Taiwan, Silicon Valley)
+6. "Product" (e.g., iPhone 16, ChatGPT, H100)
+7. "Other" (Any keyword that doesn't fit above)
+
+Return the output **STRICTLY** in JSON format as a dictionary mapping the keyword to its category.
+Example:
+{
+    "Elon Musk": "Person",
+    "AI": "Technology",
+    "NVIDIA": "Company"
+}
+
+Keywords to categorize:
+{keywords_list}

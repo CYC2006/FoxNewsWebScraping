@@ -27,6 +27,14 @@ def init_db():
             ai_full_json TEXT       -- Backup of full AI response
         )
     ''')
+
+    # Create table for persistent keyword categories
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS keyword_metadata (
+            keyword TEXT PRIMARY KEY,
+            category TEXT
+        )
+    ''')
     
     conn.commit()
     conn.close()

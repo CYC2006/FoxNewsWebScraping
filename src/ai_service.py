@@ -14,6 +14,7 @@ if not api_key:
 
 genai.configure(api_key=api_key) 
 
+
 def analyze_tech_article(content):
     #  input: aritcle cotent (str)
     # output: analyzed Dict (json)
@@ -54,3 +55,34 @@ def analyze_tech_article(content):
     except Exception as e:
         print(f"AI analysis Failed: {e}")
         return None
+    
+
+def categorize_keywords_batch(keywords_list):
+    """
+    Input: List of strings e.g. ["AI", "NVIDIA", "Musk"]
+    Output: Dict e.g. {"AI": "Technology", "NVIDIA": "Company"}
+    """
+    if not keywords_list:
+        return {}
+
+    model = genai.GenerativeModel("gemini-2.5-flash")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    prompt_path = os.path.join(base_dir, "prompts", "category_prompt.txt")
+
+    try:
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            prompt_template = f.read()
+        
+        # 將 list 轉成字串塞入 prompt
+        keywords_str = ", ".join(keywords_list)
+        final_prompt = prompt_template.replace("{keywords_list}", keywords_str)
+
+        response = model.generate_content(
+            final_prompt,
+            generation_config={"response_mime_type": "application/json"}
+        )
+        return json.loads(response.text)
+
+    except Exception as e:
+        print(f"❌ Keyword Categorization Failed: {e}")
+        return {}
