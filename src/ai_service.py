@@ -25,7 +25,7 @@ def analyze_tech_article(content):
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # 2. Combine the complete path of prompt.txt
-    prompt_path = os.path.join(base_dir, "prompts", "tech_prompt2.txt")
+    prompt_path = os.path.join(base_dir, "prompts", "tech_p2.txt")
 
     # ----- Read Prompt -----
     try:
@@ -67,7 +67,7 @@ def categorize_keywords_batch(keywords_list):
 
     model = genai.GenerativeModel("gemini-2.5-flash")
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    prompt_path = os.path.join(base_dir, "prompts", "category_prompt.txt")
+    prompt_path = os.path.join(base_dir, "prompts", "category_p2.txt")
 
     try:
         with open(prompt_path, "r", encoding="utf-8") as f:

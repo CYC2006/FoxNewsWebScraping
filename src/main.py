@@ -9,6 +9,7 @@ try:
     from fox_scraper import run_scraper  # Note: See step 2 below
     from keyword_analyzer import analyze_and_print
     from database_manager import init_db
+    from database_manager import clear_categories
 except ImportError as e:
     print(f"❌ Initialization Error: {e}")
 
@@ -20,7 +21,8 @@ def display_menu():
     print("2. Generate Keyword Analysis Report")
     print("3. View Database Summary Stats")
     print("4. Generate Podcast Script (Coming Soon)")
-    print("5. Exit")
+    print("5. Clear all categories in Database")
+    print("6. Exit")
     print("="*40)
 
 # Show Database Stats
@@ -62,6 +64,9 @@ def main():
             # You can call your upcoming podcast_producer script here
             
         elif choice == '5':
+            clear_categories()
+            
+        elif choice == '6':
             print("\n👋 Goodbye! Closing dashboard...")
             break
         

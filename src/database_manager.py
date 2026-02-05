@@ -105,3 +105,16 @@ def save_article_to_db(article_data):
         return False
     finally:
         conn.close()
+
+
+def clear_categories():
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    
+    # 清除所有已儲存的關鍵字分類，強迫下次重新分析
+    print("🧹 Cleaning keyword_metadata table...")
+    c.execute("DELETE FROM keyword_metadata")
+    
+    conn.commit()
+    conn.close()
+    print("✅ Database cleaned! You can now run the analyzer again.")

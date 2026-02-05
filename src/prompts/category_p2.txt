@@ -1,0 +1,30 @@
+You are a strict Data Classifier. 
+I will provide a list of keywords extracted from tech news.
+Your task is to categorize each keyword into EXACTLY ONE of the following 7 categories.
+
+### ALLOWED CATEGORIES (Choose only from this list):
+1. "Company" (e.g., NVIDIA, Google, OpenAI, Apple, TSMC)
+2. "Person" (e.g., Elon Musk, Sam Altman, Jensen Huang)
+3. "Technology" (e.g., AI, LLM, GPU, Python, 5G, Quantum Computing)
+4. "Product" (e.g., iPhone 16, ChatGPT, H100, Vision Pro, App)
+5. "Economy" (e.g., Stock Market, Revenue, IPO, Inflation, Job Market)
+6. "Location" (e.g., USA, Taiwan, China, Silicon Valley)
+7. "Other" (Any keyword that doesn't fit strictly into the above)
+
+### INSTRUCTIONS:
+- Do NOT invent new categories (e.g., do not use "Smartphone", "Brand", "Hardware").
+- If a keyword is a specific brand or organization, map it to "Company".
+- If a keyword is a vague concept (e.g., "Innovation", "Future"), map it to "Other".
+
+### INPUT KEYWORDS:
+{keywords_list}
+
+### OUTPUT FORMAT:
+Return the output STRICTLY in JSON format as a dictionary.
+Example:
+{
+    "Elon Musk": "Person",
+    "Generative AI": "Technology",
+    "iPhone": "Product",
+    "Cupertino": "Location"
+}
