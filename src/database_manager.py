@@ -111,7 +111,43 @@ def save_article_to_db(article_data):
 
 # ===== Database Operations from User =====
 
-# Returns a dictionary containing database statistics
+# opt1. Advanced search for the CLI dashboard
+def search_articles_advanced(query=None, search_type="title"):
+
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    
+    if not query:
+        # If no query, return the latest 20 articles
+        c.execute("SELECT title, published_date, tech_level, url, summary FROM articles ORDER BY published_date DESC LIMIT 20")
+    
+    elif search_type == "date":
+        # Search by exact date
+        c.execute("SELECT title, published_date, tech_level, url, summary FROM articles WHERE published_date = ?", (query,))
+        
+    else:
+        # Search by title keyword (Case insensitive)
+        c.execute("SELECT title, published_date, tech_level, url, summary FROM articles WHERE title LIKE ?", (f'%{query}%',))
+        
+    results = c.fetchall()
+    conn.close()
+    return results
+
+def delete_article(url):
+    """Deletes a single article by its URL."""
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    try:
+        c.execute("DELETE FROM articles WHERE url = ?", (url,))
+        conn.commit()
+        return c.rowcount > 0
+    except Exception as e:
+        print(f"Error deleting article: {e}")
+        return False
+    finally:
+        conn.close()
+
+# opt2. Returns a dictionary containing database statistics
 def get_db_stats():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -123,18 +159,7 @@ def get_db_stats():
     return {"articles": article_count, "keywords": keyword_count}
 
 
-# Clear the keyword_metadata table (for re-run AI categorization with new prompt)
-def clear_keyword_categories():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("DELETE FROM keyword_metadata")
-    deleted_count = c.rowcount
-    conn.commit()
-    conn.close()
-    print(f"🧹 Database Cleaned: Removed {deleted_count} keyword categories.")
-
-
-# Exports all articles from SQLite to a JSON file
+# opt3. Exports all articles from SQLite to a JSON file
 def export_to_json(filename = "fox_news_export.json"):
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row # This allows accessing columns by name
@@ -156,13 +181,26 @@ def export_to_json(filename = "fox_news_export.json"):
         conn.close()
 
 
+# opt4. Clear the keyword_metadata table (for re-run AI categorization with new prompt)
+def clear_keyword_categories():
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("DELETE FROM keyword_metadata")
+    deleted_count = c.rowcount
+    conn.commit()
+    conn.close()
+    print(f"🧹 Database Cleaned: Removed {deleted_count} keyword categories.")
+
+
+'''
 # Simple search function to find articles containing a specific keyword
 def search_articles_by_title(keyword):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
     # SQL LIKE query for partial matching
-    c.execute("SELECT title, published_date, url FROM articles WHERE title LIKE ?", (f'%{keyword}%',))
+    c.execute("SELECT title, published_date, url, tech_level FROM articles WHERE title LIKE ?", (f'%{keyword}%',))
     results = c.fetchall()
     conn.close()
     return results
+'''

@@ -17,10 +17,10 @@ Return the output **STRICTLY** in valid JSON format. Do not include markdown for
    - Example: {"AI": 6, "NVIDIA": 4}
 
 3. "tech_level": (integer)
-   - Score from 1 to 10 based on technical background required.
-   - 1-3: General audience.
-   - 4-7: Tech enthusiasts.
-   - 8-10: Expert Engineers.
+   - Score from 0 to 9 based on technical background required.
+   - 0-2: General audience.
+   - 3-6: Tech enthusiasts.
+   - 7-9: Expert Engineers.
 
 4. "impact_scope": (list of strings)
    - Identify nations or regions affected.
