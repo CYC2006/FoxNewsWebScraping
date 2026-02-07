@@ -1,14 +1,12 @@
 import os
 import sys
 
-# Ensure the script can find modules in the src directory
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
-
 # Import functions from your existing modules
 try:
-    from fox_scraper import run_scraper  # Note: See step 2 below
-    from keyword_analyzer import analyze_and_print
-    from database_manager import (
+    from src.fox_scraper import run_scraper  # Note: See step 2 below
+    from src.keyword_analyzer import analyze_and_print
+    from src.podcast_producer import produce_script
+    from src.database_manager import (
         init_db,
         get_db_stats,
         clear_keyword_categories,
@@ -102,7 +100,22 @@ def main():
             database_ops_menu()
             
         elif choice == '4':
-            print("\n🎧 Podcast module is under development...")
+            print("\n🎧 Podcast Generator")
+            date_input = input("Enter the date (YYYY-MM-DD) to generate script: ").strip()
+            
+            # Use datetime.strptime for strict validation
+            from datetime import datetime
+            try:
+                # This checks both format and logical date validity
+                valid_date = datetime.strptime(date_input, "%Y-%m-%d")
+                
+                # If valid, proceed to generate script
+                produce_script(date_input)
+                
+            except ValueError:
+                # This catches cases like '2026-13-01' or '2026-02-30' or 'abc'
+                print(f"❌ Invalid date or format: '{date_input}'")
+                print("   Please use the standard YYYY-MM-DD format (e.g., 2026-02-07)")
             
         elif choice == '5':
             print("\n👋 Goodbye, CYC! Closing dashboard...")

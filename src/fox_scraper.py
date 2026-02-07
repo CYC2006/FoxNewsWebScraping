@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 # Import AI module
-from ai_service import analyze_tech_article
+from src.ai_service import analyze_tech_article
 # Import Database module
-from database_manager import init_db, is_article_exists, save_article_to_db
+from src.database_manager import init_db, is_article_exists, save_article_to_db
 
 # Helper function to convert Fox News date to YYYY-MM-DD
 def parse_fox_date(date_parts):
@@ -114,7 +114,8 @@ def run_scraper():
                 full_url = relative_url if relative_url.startswith("http") else f"https://www.foxnews.com{relative_url}"
                 
                 if is_article_exists(full_url):
-                    print(f"\n⏩ Skipping: '{title[:30]}...' (Already analyzed)")
+                    print("Already analyzed")
+                    print(f"\n⏩ Skipping: '{title[:30]}...'")
                     print("-" * 82)
                     continue
 

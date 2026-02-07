@@ -86,3 +86,32 @@ def categorize_keywords_batch(keywords_list):
     except Exception as e:
         print(f"❌ Keyword Categorization Failed: {e}")
         return {}
+    
+
+def generate_podcast_script(article_data):
+    model = genai.GenerativeModel("gemini-2.5-flash")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    prompt_path = os.path.join(base_dir, "prompts", "podcast_p1.txt")
+
+    try:
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            prompt_template = f.read()
+
+        # 填入變數
+        final_prompt = prompt_template.replace("{title}", article_data['title'])
+        final_prompt = final_prompt.replace("{summary}", article_data.get('summary', ''))
+        final_prompt = final_prompt.replace("{tech_level}", str(article_data.get('tech_level', 5)))
+        
+        # [關鍵修改] 填入全文！
+        # 為了安全，我們截取前 15,000 字 (Gemini Flash 其實可以吃更多，但這樣通常夠了)
+        final_prompt = final_prompt.replace("{content}", article_data.get('content', '')[:15000])
+
+        response = model.generate_content(
+            final_prompt,
+            generation_config={"response_mime_type": "application/json"}
+        )
+        return json.loads(response.text)
+
+    except Exception as e:
+        print(f"❌ Podcast Generation Failed: {e}")
+        return None

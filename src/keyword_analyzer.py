@@ -1,7 +1,7 @@
 import sqlite3
 import json
 from collections import Counter
-from ai_service import categorize_keywords_batch
+from src.ai_service import categorize_keywords_batch
 
 DB_NAME = "fox_news.db"
 
