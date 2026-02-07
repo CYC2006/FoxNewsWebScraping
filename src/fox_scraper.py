@@ -154,6 +154,7 @@ def run_scraper():
                                 "url": full_url,
                                 "published_date": formatted_date,
                                 "crawled_at": time.strftime("%Y-%m-%d %H:%M:%S"), # fetch time
+                                "content": content,
                                 "ai_analysis": ai_result # JSON (Dict) returned from AI
                             }
 

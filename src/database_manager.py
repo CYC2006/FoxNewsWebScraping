@@ -21,6 +21,7 @@ def init_db():
             published_date TEXT,    -- Format: YYYY-MM-DD
             crawled_at TEXT,
             summary TEXT,
+            content TEXT,
             tech_level INTEGER,
             keyword_counts TEXT,    -- Stored as JSON string
             impact_scope TEXT,      -- Stored as JSON string
@@ -76,14 +77,15 @@ def save_article_to_db(article_data):
         # INSERT OR IGNORE: The magic command for deduplication based on Primary Key (url)
         c.execute('''
             INSERT OR IGNORE INTO articles 
-            (url, title, published_date, crawled_at, summary, tech_level, keyword_counts, impact_scope, ai_full_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (url, title, published_date, crawled_at, summary, content, tech_level, keyword_counts, impact_scope, ai_full_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             article_data["url"],
             article_data["title"],
             article_data["published_date"],
             article_data["crawled_at"],
             ai_result.get("summary", "N/A"),
+            article_data["content"],
             ai_result.get("tech_level", 0),
             keyword_counts_str,
             impact_scope_str,
