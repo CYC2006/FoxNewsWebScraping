@@ -73,7 +73,7 @@ def categorize_keywords_batch(keywords_list):
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
         
-        # 將 list 轉成字串塞入 prompt
+        # turn list into string
         keywords_str = ", ".join(keywords_list)
         final_prompt = prompt_template.replace("{keywords_list}", keywords_str)
 

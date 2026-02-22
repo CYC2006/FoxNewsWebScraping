@@ -83,11 +83,13 @@ def produce_script(target_date):
         print(f"{prefix}: {text}\n")
     
     print("="*50)
-    
-    # (Future: Save to a .json file for TTS)
-    # with open(f"script_{target_date}.json", "w") as f:
-    #     json.dump(script_json, f, indent=4)
 
-if __name__ == "__main__":
-    # Test run
-    produce_script("2026-02-07")
+    
+    script_filename = f"podcast_scripts/script_{target_date}.json"
+    try:
+        with open(script_filename, "w", encoding="utf-8") as f:
+            json.dump(script_json, f, indent=4, ensure_ascii=False)
+        print(f"💾 Script successfully saved as {script_filename}")
+        print("   (You can open this file and edit the text before generating audio)")
+    except Exception as e:
+        print(f"❌ Failed to save script: {e}")

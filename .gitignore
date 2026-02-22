@@ -18,3 +18,11 @@ venv/
 
 # ===== VS Code =====
 .vscode/
+
+# Audio files
+*.mp3
+*.wav
+
+# Podcast outputs
+podcast_outputs/
+podcast_scripts/

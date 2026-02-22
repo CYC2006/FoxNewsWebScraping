@@ -6,6 +6,7 @@ try:
     from src.fox_scraper import run_scraper  # Note: See step 2 below
     from src.keyword_analyzer import analyze_and_print
     from src.podcast_producer import produce_script
+    from src.audio_generator import generate_podcast_mp3
     from src.database_manager import (
         init_db,
         search_articles_advanced,
@@ -194,6 +195,17 @@ def main():
                 
                 # If valid, proceed to generate script
                 produce_script(date_input)
+
+                # Ask whether generate MP3 or not
+                print("\n" + "-"*50)
+                gen_audio = input("🎵 Do you want to generate the MP3 audio now? (y/n): ").strip().lower()
+                
+                if gen_audio == 'y':
+                    # 開始生成音檔
+                    generate_podcast_mp3(date_input)
+                else:
+                    print("⏭️ Audio generation skipped.")
+                    print(f"   (You can find the script at podcast_scripts/script_{date_input}.json to edit later)")
                 
             except ValueError:
                 # This catches cases like '2026-13-01' or '2026-02-30' or 'abc'
