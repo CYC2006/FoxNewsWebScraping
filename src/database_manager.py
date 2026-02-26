@@ -96,11 +96,9 @@ def save_article_to_db(article_data):
         
         # Check if the row was actually inserted
         if c.rowcount > 0:
-            print(f"✅ [Database] Saved: {article_data['title'][:30]}...")
+            print(f"✅ [Database] Saved: '{article_data['title'][:30]}...'")
             return True
-        else:
-            print(f"⚠️ [Database] Skipped duplicate: {article_data['title'][:30]}...")
-            return False
+        else: return False # can be removed
 
     except Exception as e:
         print(f"❌ [Database] Insert Error: {e}")

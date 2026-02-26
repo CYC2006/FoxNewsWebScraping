@@ -24,6 +24,7 @@ def main():
         # Calculate execution duration
         end_time = datetime.now()
         duration = end_time - start_time
+        print("=" * 60)
         print(f"[{end_time.strftime('%Y-%m-%d %H:%M:%S')}] ✅ Job completed successfully in {duration}.")
         
     except Exception as e:

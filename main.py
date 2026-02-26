@@ -26,7 +26,7 @@ def display_menu():
     print("1. 🔍 Fetch & Analyze Daily News")
     print("2. 📊 Generate Keyword Analysis Report")
     print("3. 🗄️  Database Operations")
-    print("4. 🎙️  Generate Podcast Script (Coming Soon)")
+    print("4. 🎙️  Generate Podcast Script")
     print("5. 🚪 Exit")
     print("="*40)
 
@@ -131,7 +131,7 @@ def database_ops_menu():
         print("\n" + "="*40)
         print("🛠️  DATABASE OPERATIONS CENTER")
         print("="*40)
-        print("1. 🔎 Search & Manage Articles (Delete/View)")  # Unified Entry
+        print("1. 🔎 Search & Manage Articles")
         print("2. 📈 View Summary Stats")
         print("3. 📦 Export Data to JSON")
         print("4. 🧹 Clear Keyword Categories")

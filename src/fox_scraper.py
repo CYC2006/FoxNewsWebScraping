@@ -46,7 +46,7 @@ def run_scraper():
     soup = BeautifulSoup(res.text, "html.parser")
     articles = soup.find_all("article")
 
-    print("-" * 82)
+    print("-" * 60)
     article_index = 1
     article_count = 0
 
@@ -115,8 +115,8 @@ def run_scraper():
                 
                 if is_article_exists(full_url):
                     print("Already analyzed")
-                    print(f"\n⏩ Skipping: '{title[:30]}...'")
-                    print("-" * 82)
+                    print(f"⏩ Skipping: '{title[:30]}...'")
+                    print("-" * 60)
                     continue
 
                 try:
@@ -145,8 +145,7 @@ def run_scraper():
                         content = "\n".join([p.get_text(strip=True) for p in paragraphs])
                         print(f"Length: {len(content.split())}")
                         
-                        # 8. Using Google AI API to analyze
-                        print("----- Google AI analyzing ... -----")
+                        # 8. Using Google genai API to analyze
                         ai_result = analyze_tech_article(content)
 
                         if ai_result:
@@ -174,9 +173,9 @@ def run_scraper():
                 except Exception as e:
                     print(f"Fail to fetch Article Content: {full_url}, Error: {e}")       
 
-        print("-" * 82)
+        print("-" * 60)
 
-    print(f"Successfully added {article_count}Check 'fox_news.db' for results.")
+    print(f"✅ Successfully added {article_count} article into 'fox_news.db'")
 
 
 # Ensure fox_scraper

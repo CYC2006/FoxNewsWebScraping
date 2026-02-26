@@ -2,6 +2,11 @@
 
 An automated pipeline that scrapes technology news from Fox News, analyzes the content using **Google Gemini AI**, stores structured data in **SQLite**, and generates engaging **podcast scripts** featuring a dynamic duo: Alex (The Host) and Jamie (The Expert).
 
+
+## Auto Scraper command
+1. crontab -e
+2. 0 8 * * * cd /Users/cyc/Projects/WebScraping && /Users/cyc/Projects/WebScraping/venv/bin/python auto_scrape.py >> scraper.log 2>&1
+
 ## 🚀 Features
 
 - **Automated Scraping**: Periodically fetches the latest tech news from Fox News.
