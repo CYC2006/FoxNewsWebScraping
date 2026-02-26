@@ -5,7 +5,7 @@ import sys
 try:
     from src.fox_scraper import run_scraper  # Note: See step 2 below
     from src.keyword_analyzer import analyze_and_print
-    from src.podcast_producer import produce_script
+    from src.podcast_producer import produce_script_by_url
     from src.audio_generator import generate_podcast_mp3
     from src.database_manager import (
         init_db,
@@ -82,7 +82,7 @@ def manage_articles_ui():
         # Enumerate creates a temporary index (1, 2, 3...) for the user
         for idx, row in enumerate(results, 1):
             # row = (title, date, level, url, summary)
-            print(f"{idx:<4} | {row[1]:<12} | {row[2]:<5} | {row[0][:40]}...")
+            print(f"{idx:<3} | {row[1]:<12} | {row[2]:<5} | {row[0][:40]}...")
 
         # --- PHASE 3: ACTION ---
         try:
@@ -185,33 +185,59 @@ def main():
 
         elif choice == '4':
             print("\n🎧 Podcast Generator")
-            date_input = input("Enter the date (YYYY-MM-DD) to generate script: ").strip()
+            date_input = input("Enter the date (YYYY-MM-DD) to list articles: ").strip()
             
-            # Use datetime.strptime for strict validation
             from datetime import datetime
             try:
-                # This checks both format and logical date validity
+                # Validate date format
                 valid_date = datetime.strptime(date_input, "%Y-%m-%d")
                 
-                # If valid, proceed to generate script
-                produce_script(date_input)
-
-                # Ask whether generate MP3 or not
-                print("\n" + "-"*50)
-                gen_audio = input("🎵 Do you want to generate the MP3 audio now? (y/n): ").strip().lower()
+                # Fetch all articles for this date using our existing advanced search
+                articles = search_articles_advanced(date_input, search_type="date")
                 
-                if gen_audio == 'y':
-                    # 開始生成音檔
-                    generate_podcast_mp3(date_input)
+                if not articles:
+                    print(f"❌ No articles found for {date_input}.")
+                    continue
+                    
+                # Display the list with temporary IDs
+                print(f"\n✅ Found {len(articles)} articles on {date_input}:")
+                print(f"{'ID':<3} | {'Level':<5} | {'Title'}")
+                print("-" * 60)
+                
+                for idx, row in enumerate(articles, 1):
+                    # row = (title, date, level, url, summary)
+                    print(f"{idx:<3} | {row[2]:<5} | {row[0][:50]}...")
+                    
+                # Ask user to select one
+                selection = input("\nSelect the ID to turn into a podcast (or Press Enter to cancel): ").strip()
+                if not selection:
+                    print("Operation Cancelled.")
+                    continue
+                    
+                sel_idx = int(selection) - 1
+                
+                if 0 <= sel_idx < len(articles):
+                    target_url = articles[sel_idx][3] # URL is at index 3
+                    
+                    # 1. Generate the script using the specific URL
+                    success = produce_script_by_url(target_url, date_input)
+                    
+                    if success:
+                        # 2. Ask to generate MP3
+                        print("\n" + "-"*50)
+                        gen_audio = input("🎵 Do you want to generate the MP3 audio now? (y/n): ").strip().lower()
+                        
+                        if gen_audio == 'y':
+                            generate_podcast_mp3(date_input)
+                        else:
+                            print("⏭️ Audio generation skipped.")
                 else:
-                    print("⏭️ Audio generation skipped.")
-                    print(f"   (You can find the script at podcast_scripts/script_{date_input}.json to edit later)")
+                    print("❌ Invalid ID Number.")
                 
             except ValueError:
-                # This catches cases like '2026-13-01' or '2026-02-30' or 'abc'
-                print(f"❌ Invalid date or format: '{date_input}'")
-                print("   Please use the standard YYYY-MM-DD format (e.g., 2026-02-07)")
-            
+                print(f"❌ Invalid input or date format: '{date_input}'")
+                print("   Please use the standard format (e.g., 2026-02-07) and enter a valid ID.")   
+ 
         elif choice == '5':
             print("\n👋 Goodbye, CYC! Closing dashboard...")
             break
