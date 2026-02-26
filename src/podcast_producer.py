@@ -12,7 +12,7 @@ def get_article_by_url(url):
     c = conn.cursor()
 
     c.execute('''
-        SELECT title, summary, content, keyword_counts, tech_level, url 
+        SELECT title, summary, content, keyword_counts, tech_level, url, crawled_at
         FROM articles 
         WHERE url = ?
     ''', (url,))
@@ -77,14 +77,18 @@ def produce_script_by_url(target_url, target_date):
     
     # 5. Save to JSON file
     os.makedirs("podcast_scripts", exist_ok=True)
-    script_filename = f"podcast_scripts/script_{target_date}.json"
+
+    raw_crawled_at = article.get('crawled_at', target_date + '00:00:00')
+    safe_timestamp = raw_crawled_at.replace("-", "").replace(" ", "").replace(":", "")
+
+    script_filename = f"podcast_scripts/script_{safe_timestamp}.json"
     
     try:
         with open(script_filename, "w", encoding="utf-8") as f:
             json.dump(script_json, f, indent=4, ensure_ascii=False)
         print(f"💾 Script successfully saved to: {script_filename}")
         print("   (You can open this file and edit the text before generating audio)")
-        return True
+        return script_filename
     except Exception as e:
         print(f"❌ Failed to save script: {e}")
-        return False
+        return None

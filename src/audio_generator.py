@@ -62,16 +62,12 @@ async def process_podcast_audio(script_path, output_path):
             
     print(f"✅ Podcast is ready! Saved to: {output_path}")
 
-def generate_podcast_mp3(date_str):
-    """
-    Synchronous wrapper to be called from main.py.
-    """
-    script_path = f"podcast_scripts/script_{date_str}.json"
-    output_path = f"podcast_outputs/podcast_{date_str}.mp3"
+
+def generate_podcast_mp3(script_path):
+    # Synchronous wrapper to be called from main.py
+    base_name = os.path.basename(script_path)
+    audio_filename = base_name.replace("script_", "podcast_").replace(".json", ".mp3")
+    output_path = f"podcast_outputs/{audio_filename}"
     
     # Run the async function using asyncio
     asyncio.run(process_podcast_audio(script_path, output_path))
-
-if __name__ == "__main__":
-    # Test run (Make sure you have a script_2026-02-07.json generated first)
-    generate_podcast_mp3("2026-02-07")

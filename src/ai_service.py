@@ -91,7 +91,7 @@ def categorize_keywords_batch(keywords_list):
 def generate_podcast_script(article_data):
     model = genai.GenerativeModel("gemini-2.5-flash")
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    prompt_path = os.path.join(base_dir, "prompts", "podcast_p1.txt")
+    prompt_path = os.path.join(base_dir, "prompts", "podcast_p2.txt")
 
     try:
         with open(prompt_path, "r", encoding="utf-8") as f:

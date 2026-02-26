@@ -31,8 +31,6 @@ def display_menu():
     print("="*40)
 
 
-# main.py
-
 def manage_articles_ui():
     """
     Interactive UI for Searching, Viewing, and Deleting articles.
@@ -220,15 +218,15 @@ def main():
                     target_url = articles[sel_idx][3] # URL is at index 3
                     
                     # 1. Generate the script using the specific URL
-                    success = produce_script_by_url(target_url, date_input)
+                    saved_script_path = produce_script_by_url(target_url, date_input)
                     
-                    if success:
+                    if saved_script_path:
                         # 2. Ask to generate MP3
                         print("\n" + "-"*50)
                         gen_audio = input("🎵 Do you want to generate the MP3 audio now? (y/n): ").strip().lower()
                         
                         if gen_audio == 'y':
-                            generate_podcast_mp3(date_input)
+                            generate_podcast_mp3(saved_script_path)
                         else:
                             print("⏭️ Audio generation skipped.")
                 else:
