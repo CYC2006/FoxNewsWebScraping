@@ -1,25 +1,26 @@
-import google.generativeai as genai
-import json
 import os
+import json
 from dotenv import load_dotenv
 
-# load environment variables in .env
+# Import the NEW google genai SDK
+from google import genai
+from google.genai import types
+
+# Load environment variables
 load_dotenv()
 
-# os.environ["GEMINI_API_KEY"] = "你的_API_KEY"
 api_key = os.getenv("GOOGLE_API_KEY")
 
 if not api_key:
     raise ValueError("❌ Error: GOOGLE_API_KEY not found!")
 
-genai.configure(api_key=api_key) 
+# Initialize the new Client
+client = genai.Client(api_key=api_key)
 
 
 def analyze_tech_article(content):
-    #  input: aritcle cotent (str)
-    # output: analyzed Dict (json)
-
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    # Input: article content (str)
+    # Output: analyzed Dict (json)
 
     # 1. Get path of ai_service.py (src/)
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,21 +40,23 @@ def analyze_tech_article(content):
     except FileNotFoundError:
         print(f"❌ Error: Prompt file not found. Please check the path: {prompt_path}")
         return None
-    
     except Exception as e:
         print(f"❌ Error: Failed to read Prompt: {e}")
         return None
 
-    # ----- Feed AI -----
+    # ----- Feed AI (Updated Syntax) -----
     try:
-        response = model.generate_content(
-            final_prompt,
-            generation_config={"response_mime_type": "application/json"}
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=final_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
         )
         return json.loads(response.text)
     
     except Exception as e:
-        print(f"AI analysis Failed: {e}")
+        print(f"❌ AI analysis Failed: {e}")
         return None
     
 
@@ -65,7 +68,6 @@ def categorize_keywords_batch(keywords_list):
     if not keywords_list:
         return {}
 
-    model = genai.GenerativeModel("gemini-2.5-flash")
     base_dir = os.path.dirname(os.path.abspath(__file__))
     prompt_path = os.path.join(base_dir, "prompts", "category_p2.txt")
 
@@ -73,13 +75,17 @@ def categorize_keywords_batch(keywords_list):
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
         
-        # turn list into string
+        # Turn list into string
         keywords_str = ", ".join(keywords_list)
         final_prompt = prompt_template.replace("{keywords_list}", keywords_str)
 
-        response = model.generate_content(
-            final_prompt,
-            generation_config={"response_mime_type": "application/json"}
+        # Updated generation syntax
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=final_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
         )
         return json.loads(response.text)
 
@@ -89,26 +95,28 @@ def categorize_keywords_batch(keywords_list):
     
 
 def generate_podcast_script(article_data):
-    model = genai.GenerativeModel("gemini-2.5-flash")
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    prompt_path = os.path.join(base_dir, "prompts", "podcast_p2.txt")
+    prompt_path = os.path.join(base_dir, "prompts", "podcast_p1.txt")
 
     try:
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
 
-        # 填入變數
+        # Fill in variables
         final_prompt = prompt_template.replace("{title}", article_data['title'])
         final_prompt = final_prompt.replace("{summary}", article_data.get('summary', ''))
         final_prompt = final_prompt.replace("{tech_level}", str(article_data.get('tech_level', 5)))
         
-        # [關鍵修改] 填入全文！
-        # 為了安全，我們截取前 15,000 字 (Gemini Flash 其實可以吃更多，但這樣通常夠了)
+        # Truncate content to 15,000 chars for safety
         final_prompt = final_prompt.replace("{content}", article_data.get('content', '')[:15000])
 
-        response = model.generate_content(
-            final_prompt,
-            generation_config={"response_mime_type": "application/json"}
+        # Updated generation syntax
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=final_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
         )
         return json.loads(response.text)
 
