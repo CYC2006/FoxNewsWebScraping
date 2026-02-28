@@ -1,5 +1,14 @@
 import sys
+import socket
 from datetime import datetime
+
+# For checking Internet connection
+def is_connected():
+    try:
+        socket.create_connection(("8.8.8.8", 53), timeout=3)
+        return True
+    except OSError:
+        return False
 
 # Import the scraper function
 try:
@@ -8,9 +17,14 @@ except ImportError as e:
     print(f"❌ Initialization Error: {e}")
     sys.exit(1)
 
+
 def main():
     # Record the start time
     start_time = datetime.now()
+    if not is_connected():
+        print(f"[{start_time}] ⚠️ No internet connection. Skipping job.")
+        return
+
     time_str = start_time.strftime('%Y-%m-%d %H:%M:%S')
     
     print("=" * 60)

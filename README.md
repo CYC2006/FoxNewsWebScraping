@@ -4,6 +4,11 @@ An automated pipeline that scrapes technology news from Fox News, analyzes the c
 
 
 ## Auto Scraper command
+### Wake Mac at 7:59 everyday
+1. sudo pmset repeat wake MTWRFSU 07:59:00
+2. sudo pmset repeat cancel
+
+### Scrap at 8:00 everyday
 1. crontab -e
 2. 0 8 * * * cd /Users/cyc/Projects/WebScraping && /Users/cyc/Projects/WebScraping/venv/bin/python auto_scrape.py >> scraper.log 2>&1
 
