@@ -1,6 +1,6 @@
 import requests
 import time # avoid DDoS detection
-import json
+import os
 from bs4 import BeautifulSoup
 from datetime import datetime
 
@@ -22,6 +22,33 @@ def parse_fox_date(date_parts):
     except Exception as e:
         print(f"⚠️ Date parsing failed: {date_parts} | Error: {e}")
         return datetime.now().strftime("%Y-%m-%d") # Fallback to today
+    
+
+# Helper function to scrap images of the article
+def get_article_image(soup, save_filename):
+    try:
+        meta_image = soup.find("meta", property="og:image")
+
+        if meta_image and meta_image.get("content"):
+            image_url = meta_image["content"]
+
+            # Download image
+            img_data = requests.get(image_url).content
+            
+            os.makedirs("article_images", exist_ok=True)
+            filepath = os.path.join("article_images", save_filename)
+            
+            with open(filepath, 'wb') as handler:
+                handler.write(img_data)
+                
+            print(f"🖼️ Image saved to {filepath}")
+            return filepath
+        else:
+            print("   ⚠️ No og:image found for this article.")
+            return None
+    except Exception as e:
+        print(f"   ❌ Failed to download image: {e}")
+        return None
 
 
 # ----- Main Logic -----
@@ -149,18 +176,30 @@ def run_scraper():
                         ai_result = analyze_tech_article(content)
 
                         if ai_result:
+                            crawled_time = time.strftime("%Y-%m-%d %H:%M:%S") # fetch time
+
                             article_data = {
                                 "title": title,
                                 "url": full_url,
                                 "published_date": formatted_date,
-                                "crawled_at": time.strftime("%Y-%m-%d %H:%M:%S"), # fetch time
+                                "crawled_at": crawled_time,
                                 "content": content,
                                 "ai_analysis": ai_result # JSON (Dict) returned from AI
                             }
 
                             print(f"Title: {title}")
 
-                            # 9. Save to Database directly
+                            # 9. Download image
+                            try:
+                                safe_timestamp = crawled_time.replace("-", "").replace(" ", "").replace(":", "")
+                                image_filename = f"image_{safe_timestamp}.jpg"
+
+                                image_path = get_article_image(detail_soup, image_filename)
+                            except Exception as img_e:
+                                print(f"   ⚠️ Image process skipped due to error: {img_e}")
+                                img_path = None # 就算報錯，也設為 None 讓程式繼續走
+
+                            # 10. Save to Database directly
                             saved = save_article_to_db(article_data)
                             if saved:
                                 article_count += 1
@@ -175,7 +214,10 @@ def run_scraper():
 
         print("-" * 60)
 
-    print(f"✅ Successfully added {article_count} article into 'fox_news.db'")
+    if article_count != 0:
+        print(f"✅ Successfully added {article_count} article into 'fox_news.db'")
+    else:
+        print("✅ All articles today has been added into 'fox_news.db")
 
 
 # Ensure fox_scraper

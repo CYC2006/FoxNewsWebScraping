@@ -26,3 +26,4 @@ venv/
 # Podcast outputs
 podcast_outputs/
 podcast_scripts/
+article_images/
