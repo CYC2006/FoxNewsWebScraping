@@ -13,8 +13,11 @@ venv/
 # ===== Logs =====
 *.log
 
-# ===== Database =====
+# ===== Data =====
 *.db
+podcast_outputs/
+podcast_scripts/
+article_images/
 
 # ===== VS Code =====
 .vscode/
@@ -22,8 +25,3 @@ venv/
 # Audio files
 *.mp3
 *.wav
-
-# Podcast outputs
-podcast_outputs/
-podcast_scripts/
-article_images/

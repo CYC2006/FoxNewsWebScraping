@@ -3,7 +3,7 @@ import json
 import os
 from src.ai_service import generate_podcast_script
 
-DB_NAME = "fox_news.db"
+DB_NAME = "data/fox_news.db"
 
 def get_article_by_url(url):
     # Fetches a specific article by its exact URL
@@ -76,12 +76,12 @@ def produce_script_by_url(target_url, target_date):
     print("="*50)
     
     # 5. Save to JSON file
-    os.makedirs("podcast_scripts", exist_ok=True)
+    os.makedirs("data/podcast_scripts", exist_ok=True)
 
     raw_crawled_at = article.get('crawled_at', target_date + '00:00:00')
     safe_timestamp = raw_crawled_at.replace("-", "").replace(" ", "").replace(":", "")
 
-    script_filename = f"podcast_scripts/script_{safe_timestamp}.json"
+    script_filename = f"data/podcast_scripts/script_{safe_timestamp}.json"
     
     try:
         with open(script_filename, "w", encoding="utf-8") as f:

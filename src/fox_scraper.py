@@ -35,8 +35,8 @@ def get_article_image(soup, save_filename):
             # Download image
             img_data = requests.get(image_url).content
             
-            os.makedirs("article_images", exist_ok=True)
-            filepath = os.path.join("article_images", save_filename)
+            os.makedirs("data/article_images", exist_ok=True)
+            filepath = os.path.join("data/article_images", save_filename)
             
             with open(filepath, 'wb') as handler:
                 handler.write(img_data)
@@ -197,7 +197,7 @@ def run_scraper():
                                 image_path = get_article_image(detail_soup, image_filename)
                             except Exception as img_e:
                                 print(f"   ⚠️ Image process skipped due to error: {img_e}")
-                                img_path = None # 就算報錯，也設為 None 讓程式繼續走
+                                image_path = None # 就算報錯，也設為 None 讓程式繼續走
 
                             # 10. Save to Database directly
                             saved = save_article_to_db(article_data)

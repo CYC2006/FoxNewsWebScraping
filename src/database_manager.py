@@ -2,7 +2,7 @@ import sqlite3
 import json
 import os
 
-DB_NAME = "fox_news.db"
+DB_NAME = "data/fox_news.db"
 
 def init_db():
     # Initialize the SQLite database and create the 'articles' table if it doesn't exist.
@@ -158,7 +158,7 @@ def get_db_stats():
 
 
 # opt3. Exports all articles from SQLite to a JSON file
-def export_to_json(filename = "fox_news_export.json"):
+def export_to_json(filename = "data/fox_news_export.json"):
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row # This allows accessing columns by name
     c = conn.cursor()

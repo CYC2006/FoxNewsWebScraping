@@ -67,7 +67,7 @@ def generate_podcast_mp3(script_path):
     # Synchronous wrapper to be called from main.py
     base_name = os.path.basename(script_path)
     audio_filename = base_name.replace("script_", "podcast_").replace(".json", ".mp3")
-    output_path = f"podcast_outputs/{audio_filename}"
+    output_path = f"data/podcast_outputs/{audio_filename}"
     
     # Run the async function using asyncio
     asyncio.run(process_podcast_audio(script_path, output_path))
